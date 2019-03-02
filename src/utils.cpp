@@ -4,6 +4,10 @@ bool utils::is_integer(const std::string& s) {
 	return std::regex_match(s, std::regex("[(-|+)|][0-9]+"));
 }
 
+std::string utils::strip_leading_zeros(const std::string& s) {
+	return s.substr(s.find_first_not_of('0'), s.size());
+}
+
 std::vector<std::string> utils::split(const std::string& s, char delimeter) {
 	std::istringstream stream(s);
 	std::vector<std::string> tokens;

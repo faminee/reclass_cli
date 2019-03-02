@@ -18,6 +18,7 @@ namespace utils {
 		}
 		return result;
 	}
+	std::string strip_leading_zeros(const std::string& s);
 	std::vector<std::string> split(const std::string& s, char delimeter);
 	namespace terminal {
 		extern uint16_t current_row;

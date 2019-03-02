@@ -20,6 +20,9 @@ struct reconstructed_data {
 	std::string type;
 	std::string name;
 	uintptr_t offset;
+	bool operator()(const reconstructed_data& a, const reconstructed_data& b) {
+		return a.offset < b.offset;
+	}
 };
 
 class memory_view : public tab {
@@ -30,8 +33,9 @@ public:
 	const std::string m_class_name;
 	std::vector<reconstructed_data> m_reconstructed_data;
 private:
+	reconstructed_data* m_current_reconstruction;
 	uint32_t selected_line = 0;
-	uintptr_t m_base_address;
+	const uintptr_t m_base_address;
 	handle* m_handle;
 	uint64_t m_bytes_to_show = 64;
 };
@@ -41,7 +45,6 @@ public:
 	generated_code_view(interface* i, const std::string& name, memory_view* m);
 	void print(WINDOW* w) override;
 	void custom_input(wchar_t c) override;
-private:
 	memory_view* m_memory_view;
 };
 
