@@ -6,8 +6,13 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 
+#include "handle.h"
+
+class handle;
+
 namespace utils {
 	bool is_integer(const std::string& s);
+	uint16_t type_to_size(handle* h, const std::string& s);
 	template<class T>
 	std::string to_hex_string(T t) {
 		static const char* const digits = "0123456789ABCDEF";

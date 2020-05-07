@@ -16,4 +16,5 @@ public:
 	uint8_t* rpm(uintptr_t address, uint64_t size);
 	const uint16_t m_pid;
 	std::string m_process_name;
+	bool is_64bit;
 };

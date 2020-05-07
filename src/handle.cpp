@@ -13,6 +13,11 @@ handle::handle(uint16_t pid) : m_pid(pid) {
 		process_path = stripper.back();
 	}
 	m_process_name = process_path.substr(0, 48);
+	istream.open("/proc/" + std::to_string(this->m_pid) + "/exe");
+	char ei_class;
+	istream.seekg(4);
+	istream.read(&ei_class, 1);
+	this->is_64bit = ei_class == 2;
 }
 
 uint8_t* handle::rpm(uintptr_t address, uint64_t size) {

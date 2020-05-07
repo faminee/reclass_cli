@@ -4,6 +4,44 @@ bool utils::is_integer(const std::string& s) {
 	return std::regex_match(s, std::regex("[(-|+)|][0-9]+"));
 }
 
+uint16_t utils::type_to_size(handle* h, const std::string& s) {
+	uint8_t platform = 0;
+	if(!h->is_64bit) {
+		platform = 2;
+	}
+	if(s.back() == '*') {
+		return sizeof(uintptr_t) / platform;
+	}
+	if(s == "uintptr_t") {
+		return sizeof(uintptr_t) / platform;
+	}
+	if(s == "int8_t") {
+		return sizeof(int32_t);
+	}
+	if(s == "uint8_t") {
+		return sizeof(int32_t);
+	}
+	if(s == "int32_t") {
+		return sizeof(int32_t);
+	}
+	if(s == "uint32_t") {
+		return sizeof(int32_t);
+	}
+	if(s == "int64_t") {
+		return sizeof(int64_t);
+	}
+	if(s == "uint64_t") {
+		return sizeof(int64_t);
+	}
+	if(s == "bool") {
+		return sizeof(bool);
+	}
+	if(s == "float") {
+		return sizeof(float);
+	}
+	return 0;
+}
+
 std::string utils::strip_leading_zeros(const std::string& s) {
 	return s.substr(s.find_first_not_of('0'), s.size());
 }

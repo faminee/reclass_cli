@@ -1,6 +1,7 @@
 #pragma once
 
 #include <curses.h>
+#include <locale>
 
 #include "handle.h"
 
@@ -20,8 +21,15 @@ struct reconstructed_data {
 	std::string type;
 	std::string name;
 	uintptr_t offset;
+	reconstructed_data() : type(""), name(""), offset(0x0) {
+	}
 	bool operator()(const reconstructed_data& a, const reconstructed_data& b) {
 		return a.offset < b.offset;
+	}
+	void clear() {
+		this->type.clear();
+		this->name.clear();
+		this->offset = 0;
 	}
 };
 
@@ -32,11 +40,11 @@ public:
 	void custom_input(wchar_t c) override;
 	const std::string m_class_name;
 	std::vector<reconstructed_data> m_reconstructed_data;
-private:
 	reconstructed_data* m_current_reconstruction;
 	uint32_t selected_line = 0;
 	const uintptr_t m_base_address;
 	handle* m_handle;
+private:
 	uint64_t m_bytes_to_show = 64;
 };
 
@@ -48,6 +56,18 @@ public:
 	memory_view* m_memory_view;
 };
 
+class menu {
+public:
+	menu();
+	menu(WINDOW* w);
+	void print();
+	void input(wchar_t c);
+	WINDOW* window;
+	tab* callee;
+	std::string text_input;
+	bool active;
+};
+
 class interface {
 public:
 	interface(handle* h, uintptr_t base_address, const std::string& class_name);
@@ -56,6 +76,7 @@ public:
 	void tick();
 	WINDOW* tab_view;
 	WINDOW* view;
+	menu m_menu;
 	tab** current_tab;
 	std::vector<tab*> m_tabs;
 };
