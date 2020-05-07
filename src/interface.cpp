@@ -47,7 +47,7 @@ void memory_view::print(WINDOW* w) {
 		if(reconstructed) {
 			mvwprintw(w, 2 + i - delta, 1, std::string(utils::to_hex_string(current_address) + "	" + reconstructed->type + " " + reconstructed->name + "		").c_str());
 		}else{
-			mvwprintw(w, 2 + i - delta, 1, std::string(utils::to_hex_string(current_address) + "	" + utils::to_hex_string(i * 4) + "	").c_str());
+			mvwprintw(w, 2 + i - delta, 1, std::string(utils::to_hex_string(current_address) + "	" + utils::to_hex_string(offset) + "	").c_str());
 		}
 		for(uintptr_t j = current_address; j < current_address + 4; j++) {
 			wprintw(w, std::string("  " + utils::to_hex_string(*(memory + (j - this->m_base_address)))).c_str());
