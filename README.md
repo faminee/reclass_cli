@@ -25,3 +25,9 @@ o: start reconstructing current address
 p: add 64 more bytes to memory viewer
 
 end: generate reconstructed code
+
+# Todo
+
+1. Ability to override reconstructed memory
+2. KEY_ESC for menu
+3. Fix alligning in certain scenarios

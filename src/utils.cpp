@@ -27,6 +27,12 @@ uint16_t utils::type_to_size(handle* h, const std::string& s) {
 	if(s == "uint32_t") {
 		return sizeof(int32_t);
 	}
+	if(s == "int16_t") {
+		return sizeof(int16_t);
+	}
+	if(s == "uint16_t") {
+		return sizeof(int16_t);
+	}
 	if(s == "int64_t") {
 		return sizeof(int64_t);
 	}

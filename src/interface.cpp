@@ -23,6 +23,46 @@ memory_view::memory_view(interface* i, const std::string& name, handle* h, uintp
 	this->m_current_reconstruction = this->m_reconstructed_data.data();
 }
 
+void print_type(uintptr_t address, WINDOW* w, const reconstructed_data* r) {
+	std::string value;
+	if(r->type == "*" || r->type == "uintptr_t" || r->type == "uint64_t") {
+		value = std::to_string(*reinterpret_cast<uintptr_t*>(address));
+	}
+	if(r->type == "int64_t") {
+		value = std::to_string(*reinterpret_cast<int64_t*>(address));
+	}
+	if(r->type == "uint8_t") {
+		value = std::to_string(*reinterpret_cast<uint8_t*>(address));
+	}
+	if(r->type == "int8_t") {
+		value = std::to_string(*reinterpret_cast<int8_t*>(address));
+	}
+	if(r->type == "uint16_t") {
+		value = std::to_string(*reinterpret_cast<uint16_t*>(address));
+	}
+	if(r->type == "int16_t") {
+		value = std::to_string(*reinterpret_cast<int16_t*>(address));
+	}
+	if(r->type == "uint32_t") {
+		value = std::to_string(*reinterpret_cast<uint32_t*>(address));
+	}
+	if(r->type == "int32_t") {
+		value = std::to_string(*reinterpret_cast<int32_t*>(address));
+	}
+	if(r->type == "float") {
+		value = std::to_string(*reinterpret_cast<float*>(address)).substr(0, 12);
+	}
+	if(r->type == "bool") {
+		bool b = *reinterpret_cast<bool*>(address);
+		if(b) {
+			value = "1";
+		}else{
+			value = "0";
+		}
+	}
+	wprintw(w, std::string(value).c_str());
+}
+
 void memory_view::print(WINDOW* w) {
 	mvwprintw(w, 1, 1, std::string("[0x" + utils::to_hex_string(this->m_base_address) + "]	" + "Class	" + this->m_class_name + "	[" + std::to_string(this->m_bytes_to_show) +"]").c_str());
 	uint8_t* memory = this->m_handle->rpm(this->m_base_address, this->m_bytes_to_show);
@@ -44,18 +84,24 @@ void memory_view::print(WINDOW* w) {
 				break;
 			}
 		}
+		wattron(w, A_DIM);
+		uint8_t* byte = memory + i * 4;
 		if(reconstructed) {
-			mvwprintw(w, 2 + i - delta, 1, std::string(utils::to_hex_string(current_address) + "	" + reconstructed->type + " " + reconstructed->name + "		").c_str());
+			wattron(w, A_BOLD);
+			wattroff(w, A_DIM);
+			mvwprintw(w, 2 + i - delta, 1, std::string(utils::to_hex_string(current_address) + "	" + reconstructed->type + " " + reconstructed->name + "		  ").c_str());
+			print_type(reinterpret_cast<uintptr_t>(byte), w, reconstructed);
 		}else{
 			mvwprintw(w, 2 + i - delta, 1, std::string(utils::to_hex_string(current_address) + "	" + utils::to_hex_string(offset) + "	").c_str());
+			for(uintptr_t j = current_address; j < current_address + 4; j++) {
+				wprintw(w, std::string("  " + utils::to_hex_string(*(memory + (j - this->m_base_address)))).c_str());
+			}
+			wprintw(w, std::string("	").c_str());
+			wprintw(w, std::string(std::to_string(*reinterpret_cast<float*>(byte)).substr(0, 12) + "		" + std::to_string(*reinterpret_cast<int32_t*>(byte))).c_str());
 		}
-		for(uintptr_t j = current_address; j < current_address + 4; j++) {
-			wprintw(w, std::string("  " + utils::to_hex_string(*(memory + (j - this->m_base_address)))).c_str());
-		}
-		wprintw(w, std::string("	").c_str());
-		uint8_t* byte = memory + i * 4;
-		wprintw(w, std::string(std::to_string(*reinterpret_cast<float*>(byte)).substr(0, 12) + "		" + std::to_string(*reinterpret_cast<int32_t*>(byte))).c_str());
 		wattroff(w, A_REVERSE);
+		wattroff(w, A_DIM);
+		wattroff(w, A_BOLD);
 	}
 	delete memory;
 }
